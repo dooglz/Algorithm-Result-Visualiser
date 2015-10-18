@@ -1,14 +1,14 @@
 var Chart = Chart || {};
 
 Chart.Construct = function (chartDiv) {
-  Chart.chartDiv  = d3.select("#chartDiv");
-  Chart.$chartDiv  = $("#chartDiv");
+  Chart.chartDiv = d3.select("#chartDiv");
+  Chart.$chartDiv = $("#chartDiv");
   Chart.species = ["setosa", "versicolor", "virginica"],
   Chart.paddingTop = 20;
-  Chart.paddingBottom = 20;
+  Chart.paddingBottom = 50;
   Chart.paddingRight = 100;
-  Chart.paddingLeft= 100;
-  Chart.width = Chart.$chartDiv.width() -  Chart.paddingRight - Chart.paddingLeft;
+  Chart.paddingLeft = 100;
+  Chart.width = Chart.$chartDiv.width() - Chart.paddingRight - Chart.paddingLeft;
   Chart.height = Chart.$chartDiv.height() - Chart.paddingTop - Chart.paddingBottom;
   Chart.xScale = {};
   Chart.yScale = {};
@@ -19,7 +19,7 @@ Chart.Construct = function (chartDiv) {
   Chart.foreground = {};
   Chart.svg = Chart.chartDiv
     .append("svg:svg")
-    .attr("width", Chart.width +  Chart.paddingRight + Chart.paddingLeft)
+    .attr("width", Chart.width + Chart.paddingRight + Chart.paddingLeft)
     .attr("height", Chart.height + Chart.paddingTop + Chart.paddingBottom)
     .append("svg:g")
     .attr("transform", "translate(" + Chart.paddingLeft + "," + Chart.paddingTop + ")");
@@ -50,12 +50,12 @@ Chart.ChangeData = function (data) {
   console.log(data);
   // Create a scale and brush for each event.
   var a = data.eventTimes;
-  
+
   var globalExtent = d3.extent(Flatten2D(a));
   for (var i = 0; i < data.events.length; i++) {
     var e = data.events[i];
     Chart.yScale[e] = d3.scale.linear()
-      //.domain(d3.extent(data.eventTimes[i]))
+    //.domain(d3.extent(data.eventTimes[i]))
       .domain(globalExtent)
       .range([Chart.height, 0])
       .clamp(true);
@@ -78,25 +78,25 @@ Chart.ChangeData = function (data) {
     .attr("transform", function (d) { return "translate(" + Chart.xScale(d) + ")"; })
     
   // Add an axis and title.
-  var axises =  g.append("svg:g")
+  var axises = g.append("svg:g")
     .attr("class", "axis")
-    .each(function (d,i) {
-      if(i ==0 ){
-      d3.select(this).call(Chart.axis.scale(Chart.yScale[d])); 
-          }else if(i == Chart.Events.length-1){
-             d3.select(this).call(Chart.axisEnd.scale(Chart.yScale[d])); 
-      }else{
-         d3.select(this).call(Chart.axisMid.scale(Chart.yScale[d])); 
+    .each(function (d, i) {
+      if (i == 0) {
+        d3.select(this).call(Chart.axis.scale(Chart.yScale[d]));
+      } else if (i == Chart.Events.length - 1) {
+        d3.select(this).call(Chart.axisEnd.scale(Chart.yScale[d]));
+      } else {
+        d3.select(this).call(Chart.axisMid.scale(Chart.yScale[d]));
       }
-     });
- 
-    axises.append("svg:text")
+    });
+
+  axises.append("svg:text")
     .attr("text-anchor", "middle")
     .attr("y", -9)
     .text(String);
-    axises.append("svg:text")
+  axises.append("svg:text")
     .attr("text-anchor", "middle")
-    .attr("y", Chart.height+20)
+    .attr("y", Chart.height + 20)
     .text(String);
 }
 
@@ -110,5 +110,4 @@ Chart.path = function (d) {
 
 var csv1;
 var csv2;
-d3.text("test.csv", function(d){csv1 = DataParser.ParseCSV(d);});
-d3.text("test2.csv", function(d){csv2 = DataParser.ParseCSV(d);});
+d3.text("test.csv", function (d) { csv1 = DataParser.ParseCSV(d); d3.text("test2.csv", function (d) { csv2 = DataParser.ParseCSV(d); Chart.ChangeData(DataParser.Combine([csv1, csv2])); }); });

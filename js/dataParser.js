@@ -21,7 +21,7 @@ DataParser.ParseCSV = function (csv) {
   var ParseHeadder = function (headder) {
     for (var i = 0; i < headder.length; i++) {
       headder[i] = Sanitise(headder[i]);
-      if(IsNumber(headder[i])){
+      if (IsNumber(headder[i])) {
         headder[i] = +headder[i];
       }
     }
@@ -30,7 +30,7 @@ DataParser.ParseCSV = function (csv) {
     }
     return headder;
   };
-  
+
   var lines = csv.split("\n");
   var result = {};
   var i;
@@ -80,4 +80,24 @@ DataParser.Combine = function (testData) {
     obj.d3data.push(d3d);
   }
   return obj;
+}
+
+DataParser.DataNameToObj = function (dataname) {
+  var days = ["Mon","Tue","Wed","Thur","Fri","Sat","Sun"];
+  var n = -1;
+  var ret  = {id:dataname,date:new Date(),name:dataname};
+  for (var i = 0; i < days.length; i++) {
+    n = dataname.indexOf(days[i]);
+    if (n != -1) {
+      break;
+    }
+  }
+  if (n != -1) {
+    var d = dataname.substring(n, dataname.length - 4);
+    ret.date = new Date(d.replace(/_/g," ").replace(/-/g,":"));
+    ret.name = dataname.substring(0,n-1);
+  } else {
+    console.warn("Couldn't parse filename", dataname)
+  }
+  return ret;
 }

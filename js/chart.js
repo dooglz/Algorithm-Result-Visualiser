@@ -40,8 +40,6 @@ Chart.Destruct = function () {
   Chart.svg = null;
 }
 
-
-
 Chart.ChangeData = function (data) {
   Chart.data = data;
   Chart.Events = data.events;
@@ -110,4 +108,4 @@ Chart.path = function (d) {
 
 var csv1;
 var csv2;
-d3.text("test.csv", function (d) { csv1 = DataParser.ParseCSV(d); d3.text("test2.csv", function (d) { csv2 = DataParser.ParseCSV(d); Chart.ChangeData(DataParser.Combine([csv1, csv2])); }); });
+//d3.text("test.csv", function (d) { csv1 = DataParser.ParseCSV(d); d3.text("test2.csv", function (d) { csv2 = DataParser.ParseCSV(d); Chart.ChangeData(DataParser.Combine([csv1, csv2])); }); });

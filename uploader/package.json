@@ -1,0 +1,12 @@
+{
+  "name": "Algorithm-Result-Visualiser-Uploader",
+  "version": "1.0.0",
+  "description": "A",
+  "author": "Sam Serrels",
+  "main": "uploader.js",
+  "dependencies": {
+    "request": "*",
+    "fs": "*"
+  },
+  "license": "MIT"
+}

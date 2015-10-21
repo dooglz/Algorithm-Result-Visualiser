@@ -39,7 +39,7 @@ DataParser.ParseCSV = function (csv) {
     if (headers.length == 0) {
       continue;
     } else if (headers.length == 1) {
-      console.warn("Parsing csv, unkown line: ", lines);
+      console.warn("Parsing csv, unkown line: ", headers);
     } else if (headers[0] == "Run") {
       break;
     } else if (headers.length == 2) {
@@ -56,25 +56,35 @@ DataParser.ParseCSV = function (csv) {
 }
 
 DataParser.Combine = function (testData) {
-  if (!$.isArray(testData) || testData.length == 1) {
-    return testData;
+  if (!$.isArray(testData) || testData.length == 0) {
+    return null;
   }
   var obj = {};
   obj.tests = [];
   obj.events = testData[0].events;
   obj.eventTimes = [];
   obj.d3data = [];
-  for (var i = 0; i < testData.length; i++) {
-    obj.tests = obj.tests.concat(testData[i].tests);
-    Horizontal2DMerge(obj.eventTimes, testData[i].eventTimes);
 
-    var d3d = { name: testData[i].tests[0] };
-    //verify events
+  var cp = testData;
+  //before we do anything, check comaptability.
+  for (var i = 1; i < testData.length; i++) {
     for (var j = 0; j < testData[i].events.length; j++) {
       if ($.inArray(testData[i].events[j], obj.events) != j) {
         console.error("comparing Tests with different events!");
-        return {};
+        testData.splice(i, 1);
+        i--;
       }
+    }
+  }
+
+  for (var i = 0; i < testData.length; i++) {
+    //basically jsut test names
+    obj.tests = obj.tests.concat(testData[i].tests);
+    //merge all the event tiem arryas into one
+    Horizontal2DMerge(obj.eventTimes, testData[i].eventTimes)
+    var d3d = { name: testData[i].tests[0] };
+    //verify events
+    for (var j = 0; j < testData[i].events.length; j++) {
       d3d[testData[i].events[j]] = testData[i].eventTimes[j];
     }
     obj.d3data.push(d3d);
@@ -83,9 +93,9 @@ DataParser.Combine = function (testData) {
 }
 
 DataParser.DataNameToObj = function (dataname) {
-  var days = ["Mon","Tue","Wed","Thur","Fri","Sat","Sun"];
+  var days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
   var n = -1;
-  var ret  = {id:dataname,date:new Date(),name:dataname};
+  var ret = { id: dataname, date: new Date(), name: dataname };
   for (var i = 0; i < days.length; i++) {
     n = dataname.indexOf(days[i]);
     if (n != -1) {
@@ -94,8 +104,8 @@ DataParser.DataNameToObj = function (dataname) {
   }
   if (n != -1) {
     var d = dataname.substring(n, dataname.length - 4);
-    ret.date = new Date(d.replace(/_/g," ").replace(/-/g,":"));
-    ret.name = dataname.substring(0,n-1);
+    ret.date = new Date(d.replace(/_/g, " ").replace(/-/g, ":"));
+    ret.name = dataname.substring(0, n - 1);
   } else {
     console.warn("Couldn't parse filename", dataname)
   }

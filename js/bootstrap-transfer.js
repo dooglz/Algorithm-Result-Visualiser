@@ -8,6 +8,7 @@
         this.populate = function (input) { _this.populate(input); };
         this.set_values = function (values) { _this.set_values(values); };
         this.get_values = function () { return _this.get_values(); };
+        this.un_select = function (name) { return _this.un_select(name); };
         return this.each(function () {
             _this = $(this);
             /* #=============================================================================== */
@@ -43,7 +44,7 @@
                 _this.trigger("added", a);
             });
             _this.$remove_btn.click(function () {
-                var a = _this.$remaining_select.val();
+                var a = _this.$target_select.val();
                 _this.move_elems(_this.$target_select.val(), true, false);
                 _this.trigger("removed", a);
             });
@@ -76,6 +77,10 @@
             };
             _this.get_values = function () {
                 return _this.get_internal(_this.$target_select);
+            };
+            _this.un_select = function (name) {
+                 _this.move_elems([name], true, false);
+                 _this.trigger("removed", name);
             };
             /* #=============================================================================== */
             /* # Implement private functions */

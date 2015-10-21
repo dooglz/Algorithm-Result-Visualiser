@@ -23,10 +23,9 @@ Chart.Construct = function (chartDiv) {
     .attr("height", Chart.height + Chart.paddingTop + Chart.paddingBottom)
     .append("svg:g")
     .attr("transform", "translate(" + Chart.paddingLeft + "," + Chart.paddingTop + ")");
-} ("#chartDiv");
+}; //("#chartDiv");
 
 Chart.Destruct = function () {
-  Chart.species = [],
   Chart.Events = [];
   Chart.m = [];
   Chart.width = 0;
@@ -41,6 +40,11 @@ Chart.Destruct = function () {
 }
 
 Chart.ChangeData = function (data) {
+  Chart.Destruct();
+  if(!Exists(data)){
+    return;
+  }
+  Chart.Construct("#chartDiv");
   Chart.data = data;
   Chart.Events = data.events;
   Chart.xScale = d3.scale.ordinal().domain(Chart.Events).rangePoints([0, Chart.width]);

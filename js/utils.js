@@ -47,8 +47,12 @@ function Flatten2D(arr) {
 }
 
 
-function Sanitise(str){
-   return str.replace(/^ +| +$|( ) +/,"");
+function Sanitise(str) {
+  if ($.type(str) === "string") {
+    return str.replace(/^ +| +$|( ) +/, "");
+  } else {
+    return str;
+  }
 }
 
 function IsDate(datestring) {

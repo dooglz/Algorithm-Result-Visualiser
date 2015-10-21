@@ -46,8 +46,16 @@ function AddToChart(name){
 			io.parsed = DataParser.ParseCSV(io.csv);
 			console.log(io.parsed);
 		}
-		inChart.push(io);
-		UpdateChart();
+		//compatable?
+		if(inChart.length > 0 && !DataParser.MatchingEvents(inChart[0].parsed,io.parsed)){
+			//incompatable
+			console.warn("incompatable");
+			t.un_select(name);
+		}else{
+			console.warn("added");
+			inChart.push(io);
+			UpdateChart();
+		}
 	}else{
 		//loadin
 		var csvjqxhr = $.get( "uploads/"+io.id, function( data ) {				 
@@ -71,18 +79,18 @@ function UpdateChart(){
 	Chart.ChangeData(DataParser.Combine(a));
 }
 
-function RemoveFromChart(name){
-	if(!Exists(name)){
+function RemoveFromChart(name) {
+	if (!Exists(name)) {
 		//scan manually
 	}
-	var ind = -1; 
+	var ind = -1;
 	for (var i = 0; i < inChart.length; i++) {
-		if(inChart[i].id === name){
+		if (inChart[i].id === name) {
 			ind = i;
 			break;
 		}
 	}
-	if (ind == -1){console.error("Uh OH",name); return;}
+	if (ind == -1) { return; }
 	inChart.splice(ind, 1);
 	UpdateChart();
 }

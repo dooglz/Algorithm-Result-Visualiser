@@ -17,6 +17,17 @@ var sample3 = {
   events: ["Start", "Middle", "End"],
 }
 
+DataParser.MatchingEvents = function (e1,e2) {
+  console.log(e1,e2);
+  for (var j = 0; j < e1.events.length; j++) {
+    if ($.inArray(e1.events[j], e2.events) != j) {
+      console.warn()
+      return false;
+    }
+  }
+   return true;
+}
+
 DataParser.ParseCSV = function (csv) {
   var ParseHeadder = function (headder) {
     for (var i = 0; i < headder.length; i++) {
@@ -68,12 +79,10 @@ DataParser.Combine = function (testData) {
   var cp = testData;
   //before we do anything, check comaptability.
   for (var i = 1; i < testData.length; i++) {
-    for (var j = 0; j < testData[i].events.length; j++) {
-      if ($.inArray(testData[i].events[j], obj.events) != j) {
-        console.error("comparing Tests with different events!");
-        testData.splice(i, 1);
-        i--;
-      }
+    if (!this.MatchingEvents(testData[0], testData[i])) {
+      console.error("comparing Tests with different events!");
+      testData.splice(i, 1);
+      i--;
     }
   }
 

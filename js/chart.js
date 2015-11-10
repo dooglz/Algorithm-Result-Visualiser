@@ -51,14 +51,12 @@ Chart.ChangeData = function (data) {
   Chart.yScale = {};
   console.log(data);
   // Create a scale and brush for each event.
-  var a = data.eventTimes;
-
-  var globalExtent = d3.extent(Flatten2D(a));
+  
   for (var i = 0; i < data.events.length; i++) {
     var e = data.events[i];
     Chart.yScale[e] = d3.scale.linear()
     //.domain(d3.extent(data.eventTimes[i]))
-      .domain(globalExtent)
+      .domain(data.timeExtent)
       .range([Chart.height, 0])
       .clamp(true);
   }

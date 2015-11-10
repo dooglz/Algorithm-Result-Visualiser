@@ -70,10 +70,11 @@ DataParser.Combine = function (testData) {
   if (!$.isArray(testData) || testData.length == 0) {
     return null;
   }
+  console.log(testData);
   var obj = {};
   obj.tests = [];
-  obj.events = testData[0].events;
-  obj.eventTimes = [];
+  obj.events = testData[0].run;
+  obj.Averages = [];
   obj.d3data = [];
 
   var cp = testData;
@@ -90,11 +91,12 @@ DataParser.Combine = function (testData) {
     //basically jsut test names
     obj.tests = obj.tests.concat(testData[i].tests);
     //merge all the event tiem arryas into one
-    Horizontal2DMerge(obj.eventTimes, testData[i].eventTimes)
-    var d3d = { name: testData[i].tests[0] };
+    Horizontal2DMerge(obj.Averages, testData[i].Averages)
+    //d3d = Averages name : Averages time eg (Sort_0: 1803814)
+    var d3d = { name: testData[i].name };
     //verify events
-    for (var j = 0; j < testData[i].events.length; j++) {
-      d3d[testData[i].events[j]] = testData[i].eventTimes[j];
+    for (var j = 0; j < testData[i].Averages.length; j++) {
+      d3d[testData[i].events[j]] = testData[i].Averages[j];
     }
     obj.d3data.push(d3d);
   }

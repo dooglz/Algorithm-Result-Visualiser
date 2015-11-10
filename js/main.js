@@ -6,10 +6,6 @@ var tableData = [];
 var tableCollumns = [];
 var indexObjects = [];
 
-function Exists(a) {
-	return (a !== undefined && a !== null && a !== "");
-}
-
 function Populate() {
 	return;
 	var populus = [];
@@ -23,49 +19,24 @@ function Populate() {
 
 function AddToChart(name) {
 	console.log("Adding", name);
-	if (!Exists(name)) {
-		//scan manually
-	}
-	//first find the indexobject
-	var io = $.grep(indexObjects, function (a) { return name === a.id; });
-	if (io.length != 1) { console.error("Uh OH", name); return; }
-	io = io[0];
-	//is it loaded?
-	if (Exists(io.csv)) {
-		//woop
-		if (!Exists(io.parsed)) {
-			io.parsed = DataParser.ParseCSV(io.csv);
-			console.log(io.parsed);
-		}
+	var dataToAdd = fileData[name];
 		//compatable?
-		if (inChart.length > 0 && !DataParser.MatchingEvents(inChart[0].parsed, io.parsed)) {
+		if (inChart.length > 0 && !DataParser.MatchingEvents(inChart[0], dataToAdd)) {
 			//incompatable
 			console.warn("incompatable");
-			t.un_select(name);
+			//t.un_select(name);
 		} else {
 			console.warn("added");
-			inChart.push(io);
+			inChart.push(dataToAdd);
 			UpdateChart();
 		}
-	} else {
-		//loadin
-		var csvjqxhr = $.get("uploads/" + io.id, function (data) {
-			console.log("Data load success" + io.id);
-			io.csv = data;
-			AddToChart(name);
-		});
-		csvjqxhr.fail(function (e) {
-			console.log("error", e);
-		});
-	}
-
 }
 
 var inChart = [];
 function UpdateChart() {
 	var a = [];
 	inChart.forEach(function (e) {
-		a.push(e.parsed)
+		a.push(e)
 	}, this);
 	Chart.ChangeData(DataParser.Combine(a));
 }
@@ -92,18 +63,18 @@ function RemoveFromChart(name) {
 var tdiv;
 var table;
 
-function Reorder(a,b) {
+function Reorder(a, b) {
 	var ai = -1;
 	var bi = -1;
 	for (var i = 0; i < tableCollumns.length; i++) {
-		if(tableCollumns[i].title == a){ai = i;}
-		if(tableCollumns[i].title == b){bi = i;}
-		if(ai != -1 && bi != -1){
+		if (tableCollumns[i].title == a) { ai = i; }
+		if (tableCollumns[i].title == b) { bi = i; }
+		if (ai != -1 && bi != -1) {
 			break;
 		}
 	}
-	if(ai == -1 || bi == -1){
-		console.error(ai,bi);
+	if (ai == -1 || bi == -1) {
+		console.error(ai, bi);
 		return false;
 	}
 	var t = tableCollumns[ai];
@@ -137,49 +108,48 @@ function InitTable() {
 
 		}
 	}, this);
-	Reorder("filename","name");
+	Reorder("filename", "name");
+
+	for (var i = 0; i < tableData.length; i++) {
+		tableData[i].unshift("");
+	}
+	tableCollumns.unshift({ title: "Select" });
+
 	table.html("");
-	table.DataTable({
+	var dTable = table.DataTable({
 		data: tableData,
 		scrollX: true,
 		columns: tableCollumns,
-		select: true,
+		select: {
+            style: 'multi',
+            selector: 'td:first-child'
+        },
+		order: [[1, 'asc']],
 		columnDefs: [
 			{
-                "targets": [ 1 ],
+                orderable: false,
+				className: 'select-checkbox',
+				targets: 0
+            },
+			{
+                "targets": [1],
                 "width": "10px"
             },
             {
-                "targets": [ 4 ],
+                "targets": [4,5,6,7,8,9,10,11,12],
                 "visible": false,
             },
-            {
-                "targets": [ 5 ],
-                "visible": false
-            },
-			            {
-                "targets": [6 ],
-                "visible": false
-            },
-			            {
-                "targets": [ 7 ],
-                "visible": false
-            },
-			            {
-                "targets": [ 8 ],
-                "visible": false
-            },     {
-                "targets": [ 9 ],
-                "visible": false
-            },     {
-                "targets": [ 10 ],
-                "visible": false
-            },     {
-                "targets": [ 11 ],
-                "visible": false
-            }
         ]
 	});
+	dTable
+        .on( 'select', function ( e, dt, type, indexes ) {
+			console.log(indexes[0]);
+			AddToChart(indexes[0]);
+        } )
+        .on( 'deselect', function ( e, dt, type, indexes ) {
+			 console.log(indexes[0]);
+        } );
+	
 }
 
 

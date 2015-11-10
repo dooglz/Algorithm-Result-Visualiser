@@ -11,7 +11,8 @@
   <!-- Bootstrap Core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/game.css" rel="stylesheet">
-  	<link href="css/bootstrap-transfer.css" rel="stylesheet">
+  <link href="css/bootstrap-transfer.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/s/bs/dt-1.10.10,se-1.1.0/datatables.min.css" />
   <style>
     body {
       padding-top: 10px;
@@ -26,61 +27,62 @@
     </div>
   </div>
   <div class="container superwide">
+    <hr>
     <div class="row" style="text-align: center;">
-      <h4>
-      <div class="col-sm-3" id="bugsDiv">
-        Bugs<br>9001
+      <div class="col-sm-12" id="tableDiv">
+        <table id="table_id" class="display">
+          <thead>
+            <tr>
+              <th>Column 1</th>
+              <th>Column 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Row 1 Data 1</td>
+              <td>Row 1 Data 2</td>
+            </tr>
+            <tr>
+              <td>Row 2 Data 1</td>
+              <td>Row 2 Data 2</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="col-sm-3" id="codesizeDiv">
-        Code Size<br>10MB
-      </div>
-      <div class="col-sm-3" id="coolnessDiv">
-        Coolness<br>3000
-      </div>
-      <div class="col-sm-3" id="timerDiv">
-        Time Remaining<br>02:15
-      </div>
-      <br><br>
-      </h4>
     </div>
-      <div class="container superwide">
-    <div class="row" style="text-align: center;">
-    
-      <div class="col-sm-12" id="transferDiv"></div>
-
-    </div>
-    
-    <!-- Footer -->
-    <div class="container superwide">
-      <hr>
-      <footer>
-        <div class="row">
-          <div class="col-lg-12">
-            <p>Result visualiser, Sam Serrels</p>
-            <div id="libCredits">
-              This Project makes use of the following libraries:
-              <ul class="list-inline">
-                <li>
-                  <a href="http://getbootstrap.com/">Bootstrap</a>
-                </li>
-                <li>
-                  <a href="http://jquery.com/">jQuery</a>
-                </li>
-              </ul>
-            </div>
+  </div>
+  <!-- Footer -->
+  <div class="container superwide">
+    <hr>
+    <footer>
+      <div class="row">
+        <div class="col-lg-12">
+          <p>Result visualiser, Sam Serrels</p>
+          <div id="libCredits">
+            This Project makes use of the following libraries:
+            <ul class="list-inline">
+              <li>
+                <a href="http://getbootstrap.com/">Bootstrap</a>
+              </li>
+              <li>
+                <a href="http://jquery.com/">jQuery</a>
+              </li>
+            </ul>
           </div>
         </div>
-      </footer>
-    </div>
-    <!-- Page End -->
-    <script src="js/jquery-2.1.4.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-transfer.js"></script>
-    <script src="js/d3.min.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/dataParser.js"></script>
-    <script src="js/chart.js"></script>
-    <script src="js/main.js"></script>
+      </div>
+    </footer>
+  </div>
+  <!-- Page End -->
+  <script src="js/jquery-2.1.4.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-transfer.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/s/bs/dt-1.10.10,se-1.1.0/datatables.min.js"></script>
+  <script src="js/d3.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/dataParser.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>

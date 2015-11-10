@@ -153,5 +153,6 @@ function GetFiles() {
 $(document).ready(function () {
   tdiv = $("#tableDiv");
   table = $('#table_id');
+  GetFiles();
 })
 ;

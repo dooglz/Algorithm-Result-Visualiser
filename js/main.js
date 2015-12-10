@@ -7,24 +7,28 @@ var index = [];
 var fileData = [];
 var tableData = [];
 var tableCollumns = [];
+var dTable;
 
-function AddToChart(name) {
-  console.log("Adding", name);
-  var dataToAdd = fileData[name];
-		//compatable?
-		if (inChart.length > 0 && !DataParser.MatchingEvents(inChart[0], dataToAdd)) {
-      //incompatable
-      console.warn("incompatable");
-      //t.un_select(name);
-		} else {
-      console.warn("added");
-      inChart.push(dataToAdd);
-      UpdateChart();
-		}
+//called when data is seelcted on datatable
+function AddToChart(index) {
+  var dataToAdd = fileData[index];
+  console.log("Adding", index, dataToAdd.name);
+  if (!Exists(fileData.tableIndex)) {
+    dataToAdd.tableIndex = index;
+  }
+  if (inChart.length > 0 && $.grep(inChart, function (a) { return a.tableIndex == index; }).length != 0) {
+    console.warn("Already in chart");
+  } else if (inChart.length > 0 && !DataParser.MatchingEvents(inChart[0], dataToAdd)) {
+    console.warn("Incompatable");
+  } else {
+    inChart.push(dataToAdd);
+    UpdateChart();
+  }
 }
 
 var inChart = [];
 function UpdateChart() {
+  dTable.draw();
   var a = [];
   inChart.forEach(function (e) {
     a.push(e)
@@ -32,11 +36,10 @@ function UpdateChart() {
   Chart.ChangeData(DataParser.Combine(a));
 }
 
-function RemoveFromChart(name) {
- var datatoRem = fileData[name];
+function RemoveFromChart(index) {
   var ind = -1;
   for (var i = 0; i < inChart.length; i++) {
-    if (inChart[i].name === datatoRem.name) {
+    if (inChart[i].tableIndex === index) {
       ind = i;
       break;
     }
@@ -49,6 +52,7 @@ function RemoveFromChart(name) {
 var tdiv;
 var table;
 
+//takes two collumn names and swaps them in tableCollumns and tableData
 function Reorder(a, b) {
   var ai = -1;
   var bi = -1;
@@ -73,7 +77,7 @@ function Reorder(a, b) {
   }
 }
 
-
+//Smooths incomming data, creates dataselect table
 function InitTable() {
   if (!Exists(fileData)) { return; }
   tableData = [];
@@ -102,15 +106,34 @@ function InitTable() {
   tableCollumns.unshift({ title: "Select" });
 
   table.html("");
-  var dTable = table.DataTable({
+  dTable = table.DataTable({
+
+        fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                if(inChart.length > 0){
+                  if(DataParser.MatchingEvents(inChart[0], fileData[iDisplayIndexFull])){
+                    $('td', nRow).removeClass('redbg');
+                    $('td', nRow).prop('disabled', false);
+                  }else{
+                    $('td', nRow).addClass('redbg');
+                    $('td', nRow).prop('disabled', true);
+                  }
+                }else{
+                  $('td', nRow).removeClass('redbg');
+                  $('td', nRow).prop('disabled', false);
+                }
+            },
     data: tableData,
-    scrollX: true,
+    //scrollX: true,
+    // scrollY: "500px",
+    // scrollCollapse: true,
     columns: tableCollumns,
+
+    
     select: {
       style: 'multi',
       selector: 'td:first-child'
     },
-    order: [[1, 'asc']],
+    order: [[3, 'desc']],
     columnDefs: [
       {
         orderable: false,
@@ -122,11 +145,12 @@ function InitTable() {
         "width": "10px"
       },
       {
-        "targets": [4, 5, 6, 7, 8, 9, 10, 11, 12],
+        "targets": [4, 5, 6, 7, 8, 9, 10, 11],
         "visible": false,
       },
     ]
   });
+  console.log(dTable);
   dTable
     .on('select', function (e, dt, type, indexes) {
       console.log(indexes[0]);
@@ -136,7 +160,6 @@ function InitTable() {
       console.log(indexes[0]);
       RemoveFromChart(indexes[0]);
     });
-
 }
 
 

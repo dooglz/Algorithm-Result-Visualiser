@@ -68,3 +68,10 @@ svg {
 .axis text {
   text-shadow: 0 1px 0 #fff;
 }
+
+.greenbg {
+ background-color: #bbff99;
+}
+.redbg {
+ background-color: 	#ff9999;
+}

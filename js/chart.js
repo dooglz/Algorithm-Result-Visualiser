@@ -74,8 +74,10 @@ Chart.ChangeData = function (data) {
     .data(data.d3data)
     .enter().append("svg:path")
     .attr("d", Chart.path)
-    .attr("stroke", function (d,i){return c10(i);} );
+    .attr("stroke", function (d,i){return c10(i);} )
     //.attr("class", "setosa");
+    //Chart.foreground.on("mouseover", function (d) {d3.select(this).attr("stroke", "red" );});
+   // Chart.foreground.on("mouseout", function (d) {d3.select(this).attr("stroke",  function (d,i){return c10(i);}  );});
 
   // Add a group element for each event.
   var g = Chart.svg.selectAll(".event")
@@ -99,24 +101,20 @@ Chart.ChangeData = function (data) {
 
   axises.append("svg:text")
     .attr("text-anchor", "middle")
-    .attr("y", -9)
-    .text(String);
-  axises.append("svg:text")
-    .attr("text-anchor", "middle")
     .attr("y", function (d,i){return Chart.height + 20 + (i%3)*15;})
     .text(String);
     
-  axises.on("mouseover", $.proxy(function (d) {
+  axises.on("mouseover", function (d) {
       d3.select(this).attr("class", "axis red" );
       d3.select(this).selectAll("text").attr("fill", "red" );
       Chart.Tooltip.transition().duration(200).style("opacity", .9);
       Chart.Tooltip.html(d).style("left",(d3.event.pageX) + "px").style("top",(d3.event.pageY - 28) + "px");
-    }));
-    axises.on("mouseout", $.proxy(function (d) {
+    });
+    axises.on("mouseout", function (d) {
       d3.select(this).attr("class", "axis" );
       d3.select(this).selectAll("text").attr("fill", "black" );
      Chart.Tooltip.transition().duration(500).style("opacity", 0);
-    }));
+    });
 }
 
 

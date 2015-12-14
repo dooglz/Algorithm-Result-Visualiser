@@ -8,6 +8,16 @@ var fileData = [];
 var tableData = [];
 var tableCollumns = [];
 var dTable;
+var tdiv;
+var table;
+
+var selectedTable;
+var selectedTableDiv;
+var selectedDataTable;
+
+var selectedTableData = [];
+var selectedTableDataSource = [];
+var selectedTableCollumns = [];
 
 //called when data is seelcted on datatable
 function AddToChart(index) {
@@ -30,9 +40,18 @@ var inChart = [];
 function UpdateChart() {
   dTable.draw();
   var a = [];
+  selectedTableData = [];
+  selectedDataTable.clear();
+  
   inChart.forEach(function (e) {
-    a.push(e)
+    a.push(e);
+    selectedTableData.push(selectedTableDataSource[e.tableIndex]);
   }, this);
+  
+  if(selectedTableData.length > 0){
+    selectedTable.dataTable().fnAddData(selectedTableData);
+  }
+  selectedDataTable.draw();
   Chart.ChangeData(DataParser.Combine(a));
 }
 
@@ -48,9 +67,6 @@ function RemoveFromChart(index) {
   inChart.splice(ind, 1);
   UpdateChart();
 }
-
-var tdiv;
-var table;
 
 //takes two collumn names and swaps them in tableCollumns and tableData
 function Reorder(a, b) {
@@ -100,6 +116,21 @@ function InitTable() {
   }, this);
   Reorder("filename", "name");
 
+  //do some horrible hack to copy
+  selectedTableDataSource = JSON.parse(JSON.stringify(tableData));
+  selectedTableCollumns = JSON.parse(JSON.stringify(tableCollumns));
+  
+  //create the selected table
+  selectedDataTable = selectedTable.DataTable({
+    data: selectedTableData,
+    scrollX: true,
+    paging: false,
+    searching: false,
+    scrollCollapse: true,
+    columns: selectedTableCollumns
+  });
+
+  //add in the select collumn
   for (var i = 0; i < tableData.length; i++) {
     tableData[i].unshift("");
   }
@@ -107,28 +138,25 @@ function InitTable() {
 
   table.html("");
   dTable = table.DataTable({
-
-        fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                if(inChart.length > 0){
-                  if(DataParser.MatchingEvents(inChart[0], fileData[iDisplayIndexFull])){
-                    $('td', nRow).removeClass('redbg');
-                    $('td', nRow).prop('disabled', false);
-                  }else{
-                    $('td', nRow).addClass('redbg');
-                    $('td', nRow).prop('disabled', true);
-                  }
-                }else{
-                  $('td', nRow).removeClass('redbg');
-                  $('td', nRow).prop('disabled', false);
-                }
-            },
+    fnRowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+      if (inChart.length > 0) {
+        if (DataParser.MatchingEvents(inChart[0], fileData[iDisplayIndexFull])) {
+          $('td', nRow).removeClass('redbg');
+          $('td', nRow).prop('disabled', false);
+        } else {
+          $('td', nRow).addClass('redbg');
+          $('td', nRow).prop('disabled', true);
+        }
+      } else {
+        $('td', nRow).removeClass('redbg');
+        $('td', nRow).prop('disabled', false);
+      }
+    },
     data: tableData,
     //scrollX: true,
     // scrollY: "500px",
     // scrollCollapse: true,
     columns: tableCollumns,
-
-    
     select: {
       style: 'multi',
       selector: 'td:first-child'
@@ -150,14 +178,11 @@ function InitTable() {
       },
     ]
   });
-  console.log(dTable);
   dTable
     .on('select', function (e, dt, type, indexes) {
-      console.log(indexes[0]);
       AddToChart(indexes[0]);
     })
     .on('deselect', function (e, dt, type, indexes) {
-      console.log(indexes[0]);
       RemoveFromChart(indexes[0]);
     });
 }
@@ -176,6 +201,8 @@ function GetFiles() {
 $(document).ready(function () {
   tdiv = $("#tableDiv");
   table = $('#table_id');
+  selectedTable =  $('#selectedDataTable_id');
+  selectedTableDiv =  $('#selectedDataTableDiv');
   GetFiles();
 })
 ;

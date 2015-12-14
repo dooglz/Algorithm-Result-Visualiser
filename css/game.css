@@ -65,6 +65,10 @@ svg {
   shape-rendering: crispEdges;
 }
 
+.axis.red path {
+  stroke: red;
+}
+
 .axis text {
   text-shadow: 0 1px 0 #fff;
 }
@@ -74,4 +78,14 @@ svg {
 }
 .redbg {
  background-color: 	#ff9999;
+}
+div.tooltip {   
+  position: absolute;           
+  text-align: left;                           
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
 }

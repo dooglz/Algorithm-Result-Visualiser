@@ -25,6 +25,10 @@ Chart.Construct = function (chartDiv) {
     .attr("height", Chart.height + Chart.paddingTop + Chart.paddingBottom)
     .append("svg:g")
     .attr("transform", "translate(" + Chart.paddingLeft + "," + Chart.paddingTop + ")");
+    
+    Chart.Tooltip = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
+
+    
 }; //("#chartDiv");
 
 Chart.Destruct = function () {
@@ -101,6 +105,18 @@ Chart.ChangeData = function (data) {
     .attr("text-anchor", "middle")
     .attr("y", function (d,i){return Chart.height + 20 + (i%3)*15;})
     .text(String);
+    
+  axises.on("mouseover", $.proxy(function (d) {
+      d3.select(this).attr("class", "axis red" );
+      d3.select(this).selectAll("text").attr("fill", "red" );
+      Chart.Tooltip.transition().duration(200).style("opacity", .9);
+      Chart.Tooltip.html(d).style("left",(d3.event.pageX) + "px").style("top",(d3.event.pageY - 28) + "px");
+    }));
+    axises.on("mouseout", $.proxy(function (d) {
+      d3.select(this).attr("class", "axis" );
+      d3.select(this).selectAll("text").attr("fill", "black" );
+     Chart.Tooltip.transition().duration(500).style("opacity", 0);
+    }));
 }
 
 

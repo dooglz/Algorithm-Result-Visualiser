@@ -42,14 +42,16 @@ function UpdateChart() {
   var a = [];
   selectedTableData = [];
   selectedDataTable.clear();
-  
+
   inChart.forEach(function (e) {
     a.push(e);
     selectedTableData.push(selectedTableDataSource[e.tableIndex]);
   }, this);
-  
-  if(selectedTableData.length > 0){
+
+  if (selectedTableData.length > 0) {
     selectedTable.dataTable().fnAddData(selectedTableData);
+    //lets update some colours
+    
   }
   selectedDataTable.draw();
   Chart.ChangeData(DataParser.Combine(a));
@@ -126,8 +128,11 @@ function InitTable() {
     scrollX: true,
     paging: false,
     searching: false,
-    scrollCollapse: true,
-    columns: selectedTableCollumns
+    columns: selectedTableCollumns,
+    fnRowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+      console.log(aData);
+      $('td', nRow).css("background", 'linear-gradient(rgba(0,0,0,0),' + d3ColourToCss(d3.rgb(c10(Find(selectedTableData, aData[1], 1))), 0.5) + ')');
+    }
   });
 
   //add in the select collumn
@@ -201,8 +206,17 @@ function GetFiles() {
 $(document).ready(function () {
   tdiv = $("#tableDiv");
   table = $('#table_id');
-  selectedTable =  $('#selectedDataTable_id');
-  selectedTableDiv =  $('#selectedDataTableDiv');
+  selectedTable = $('#selectedDataTable_id');
+  selectedTableDiv = $('#selectedDataTableDiv');
   GetFiles();
 })
 ;
+
+function Find(arr, name, attr) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i][attr] == name) {
+      return i;
+    }
+  }
+  return -1;
+}

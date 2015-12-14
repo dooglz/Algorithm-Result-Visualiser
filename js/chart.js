@@ -1,5 +1,7 @@
 var Chart = Chart || {};
 
+var c10 = d3.scale.category10();
+
 Chart.Construct = function (chartDiv) {
   Chart.chartDiv = d3.select("#chartDiv");
   Chart.$chartDiv = $("#chartDiv");
@@ -68,7 +70,8 @@ Chart.ChangeData = function (data) {
     .data(data.d3data)
     .enter().append("svg:path")
     .attr("d", Chart.path)
-    .attr("class", "setosa");
+    .attr("stroke", function (d,i){return c10(i);} );
+    //.attr("class", "setosa");
 
   // Add a group element for each event.
   var g = Chart.svg.selectAll(".event")
@@ -96,7 +99,7 @@ Chart.ChangeData = function (data) {
     .text(String);
   axises.append("svg:text")
     .attr("text-anchor", "middle")
-    .attr("y", Chart.height + 20)
+    .attr("y", function (d,i){return Chart.height + 20 + (i%3)*15;})
     .text(String);
 }
 

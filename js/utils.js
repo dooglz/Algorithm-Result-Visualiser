@@ -65,3 +65,7 @@ function IsNumber(numberString) {
   var numberRegEx = /^(([0-9]+)||([0-9]+\.[0-9]+f?))$/;
   return ((numberRegEx.test(numberString)) && (!isNaN(parseFloat(numberString))));
 }
+
+function d3ColourToCss(c,alpha){
+  return "rgba("+c.r+","+c.g+","+c.b+","+alpha+")";
+}
